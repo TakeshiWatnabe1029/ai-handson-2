@@ -1,8 +1,9 @@
 # AIハンズオン 12/3・12/17
 
 <!-- codespaces-button:start -->
-> [!IMPORTANT]
-> **準備中です。** リポジトリを作成してから1分ほどたったら、このページを再読み込みしてください。ここに「Open in GitHub Codespaces」ボタンが表示されます。
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/TakeshiWatnabe1029/ai-handson-2?quickstart=1)
+
+ボタンを押してください。はじめてのときは、配られたキーを貼り付けて「Create new codespace」を、2回目からは「Resume this codespace」を押します。
 <!-- codespaces-button:end -->
 
 授業で使う開発環境（GitHub Codespaces）です。はじめ方は、配布された手順書を見てください。
