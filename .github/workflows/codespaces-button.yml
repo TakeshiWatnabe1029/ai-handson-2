@@ -1,0 +1,57 @@
+name: Codespacesのボタンを設定
+
+# テンプレートから作ったリポジトリで1回だけ動き、READMEのボタンを
+# 「無ければ新規作成・あれば再開」の専用リンク（codespaces.new/<このリポジトリ>?quickstart=1）に書き換える。
+# 書き換えるのは README.md の codespaces-button:start〜end の間だけ。
+# テンプレート自体では動かない。書き換え済みなら何もしない。
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  setup:
+    if: ${{ !github.event.repository.is_template }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: READMEのボタンを、このリポジトリ専用にする
+        run: |
+          python3 - <<'PY'
+          import os, pathlib, re
+          p = pathlib.Path("README.md")
+          s = p.read_text(encoding="utf-8")
+          url = f"https://codespaces.new/{os.environ['GITHUB_REPOSITORY']}?quickstart=1"
+          if url in s:
+              print("already rewritten")
+              raise SystemExit(0)
+          block = (
+              "<!-- codespaces-button:start -->\n"
+              f"[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)]({url})\n"
+              "\n"
+              "ボタンを押してください。はじめてのときは、配られたキーを貼り付けて「Create new codespace」を、"
+              "2回目からは「Resume this codespace」を押します。\n"
+              "<!-- codespaces-button:end -->"
+          )
+          s2, n = re.subn(r"<!-- codespaces-button:start -->.*?<!-- codespaces-button:end -->", block, s, flags=re.S)
+          if n != 1:
+              raise SystemExit("README.md に codespaces-button の目印が見つからない")
+          p.write_text(s2, encoding="utf-8")
+          PY
+          if git diff --quiet; then
+            echo "no change"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -am "Codespacesのボタンを、このリポジトリ専用にする"
+          for i in 1 2 3; do
+            git push && exit 0
+            sleep 5
+            git pull --rebase
+          done
+          exit 1

@@ -1,0 +1,51 @@
+{
+  "name": "AIハンズオン 12/3・12/17",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:22-bookworm",
+  "containerEnv": {
+    "ANTHROPIC_BASE_URL": "https://openrouter.ai/api",
+    "ANTHROPIC_API_KEY": "",
+    "ANTHROPIC_MODEL": "anthropic/claude-haiku-5.5",
+    "CLAUDE_CODE_PROMPT_CACHE_TTL": "1h",
+    "CLAUDE_CODE_AUTO_COMPACT_WINDOW": "100000",
+    "DISABLE_AUTOUPDATER": "1"
+  },
+  "onCreateCommand": "npm install -g @anthropic-ai/claude-code@2.1.323",
+  "postCreateCommand": "node scripts/trust-claude.mjs",
+  "postStartCommand": "node scripts/start-page.mjs",
+  "postAttachCommand": {
+    "preview": "npm run dev",
+    "start": "node scripts/open-start.mjs"
+  },
+  "forwardPorts": [3000],
+  "portsAttributes": {
+    "3000": {
+      "label": "プレビュー",
+      "onAutoForward": "openPreview"
+    }
+  },
+  "otherPortsAttributes": {
+    "onAutoForward": "ignore"
+  },
+  "secrets": {
+    "ANTHROPIC_AUTH_TOKEN": {
+      "description": "授業で配布されたClaude用のキーを貼り付けてください。他の人に見せないでください。"
+    }
+  },
+  "customizations": {
+    "codespaces": {
+      "openFiles": []
+    },
+    "vscode": {
+      "extensions": ["anthropic.claude-code@2.1.323"],
+      "settings": {
+        "extensions.autoUpdate": false,
+        "claudeCode.disableLoginPrompt": true,
+        "claudeCode.preferredLocation": "sidebar",
+        "chat.disableAIFeatures": true,
+        "workbench.editorAssociations": {
+          "START.md": "vscode.markdown.preview.editor"
+        }
+      }
+    }
+  }
+}
